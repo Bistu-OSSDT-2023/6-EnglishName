@@ -1,0 +1,131 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+
+public class StuMain {
+
+    public static void main(String[] args) {
+
+        System.out.println("--欢迎您使用学生管理系统--");
+
+        // 扫描器对象，在控制台上完成数据获取
+        Scanner s = new Scanner(System.in);
+
+        System.out.println("请输入要创建的学生数量：");
+        int count = s.nextInt();
+
+        // 存储学生对象的数组
+        Student[] students = new Student[count];
+
+        for (int i = 0; i < count; i++) {
+            System.out.println("请输入第 " + (i + 1) + " 个学生的信息：");
+
+            Student student = new Student();
+
+            // ===========学号================//
+            System.out.println("请输入学号");
+            int id = s.nextInt();
+            student.id = id;
+
+            // ===========姓名================//
+            System.out.println("请输入姓名");
+            String name = s.next();
+            student.username = name;
+
+            // ===========性别================//
+            System.out.println("请输入性别");
+            String sex = s.next();
+            student.sex = sex;
+
+            // ===========数学================//
+            System.out.println("请输入数学成绩");
+            int math = s.nextInt();
+            student.Math = math;
+
+            // ===========语文================//
+            System.out.println("请输入语文成绩");
+            int chinese = s.nextInt();
+            student.Chinese = chinese;
+
+            // ===========英语================//
+            System.out.println("请输入英语成绩");
+            int english = s.nextInt();
+            student.English = english;
+
+            // 将学生对象存入数组
+            students[i] = student;
+        }
+
+        // 计算学生的语文、数学、英语平均分
+        calculateAverage(students);
+
+        // 对学生数组进行排序
+        Arrays.sort(students, new Comparator<Student>() {
+            @Override
+            public int compare(Student s1, Student s2) {
+                double avg1 = (s1.Chinese + s1.Math + s1.English) / 3.0;
+                double avg2 = (s2.Chinese + s2.Math + s2.English) / 3.0;
+                // 降序排列
+                return Double.compare(avg2, avg1);
+            }
+        });
+
+        // 把学生的数据，写入txt文档中
+        writeStudentsToFile(students);
+    }
+
+    public static void calculateAverage(Student[] students) {
+        for (Student student : students) {
+            double average = (student.Chinese + student.Math + student.English) / 3.0;
+            student.average = average;
+        }
+    }
+
+    public static void writeStudentsToFile(Student[] students) {
+
+        // 创建文件对象
+        File file = new File("stu.txt");
+
+        BufferedWriter bw = null;
+        try {
+            // 创建输出流
+            bw = new BufferedWriter(new FileWriter(file));
+
+            // 写入内容
+            bw.write("学号\t姓名\t性别\t数学\t语文\t英语\t平均分");
+
+            // 继续写入
+            bw.newLine();
+
+            // 遍历学生数组，逐个写入学生信息
+            for (Student student : students) {
+                bw.write(student.id + "\t");
+                bw.write(student.username + "\t");
+                bw.write(student.sex + "\t");
+                bw.write(student.Math + "\t");
+                bw.write(student.Chinese + "\t");
+                bw.write(student.English + "\t");
+                bw.write(student.average + "\t");
+                bw.newLine();
+            }
+
+            // 刷新
+            bw.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
