@@ -1,0 +1,20 @@
+
+private static  int JUMP_DURATION = SpaceBarTimer.getJumpTime(); // Jump duration in milliseconds
+private static  int JUMP_HEIGHT;// Height to jump in pixels
+
+
+if(JUMP_DURATION<300){
+	JUMP_HEIGHT=50;
+}
+else if(JUMP_DURATION>=300 && JUMP_DURATION<400) {
+	JUMP_HEIGHT=70;
+}
+else if(JUMP_DURATION>=400 && JUMP_DURATION<500) {
+	JUMP_HEIGHT=90;
+}
+else if(JUMP_DURATION>=500 && JUMP_DURATION<600) {
+	JUMP_HEIGHT=120;
+}
+else if(JUMP_DURATION>=600 && JUMP_DURATION<700) {
+	JUMP_HEIGHT=160;
+}
