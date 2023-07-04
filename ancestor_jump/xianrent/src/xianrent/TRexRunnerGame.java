@@ -46,21 +46,6 @@ public class TRexRunnerGame extends JFrame {
         private static final int MAX_OBSTACLE_HEIGHT = 80;
         private static final int OBSTACLE_SPEED = 4;
 
-if(JUMP_DURATION<300){
-	JUMP_HEIGHT=50;
-}
-else if(JUMP_DURATION>=300 && JUMP_DURATION<400) {
-	JUMP_HEIGHT=70;
-}
-else if(JUMP_DURATION>=400 && JUMP_DURATION<500) {
-	JUMP_HEIGHT=90;
-}
-else if(JUMP_DURATION>=500 && JUMP_DURATION<600) {
-	JUMP_HEIGHT=120;
-}
-else if(JUMP_DURATION>=600 && JUMP_DURATION<700) {
-	JUMP_HEIGHT=160;
-}
 
 
 
@@ -134,6 +119,18 @@ else if(JUMP_DURATION>=600 && JUMP_DURATION<700) {
 
         private void update() {
             if (isJumping) {
+		    if(JUMP_DURATION<300){
+			JUMP_HEIGHT=50;
+		}else if(JUMP_DURATION>=300 && JUMP_DURATION<400) {
+			JUMP_HEIGHT=70;
+		}else if(JUMP_DURATION>=400 && JUMP_DURATION<500) {
+			JUMP_HEIGHT=90;
+		}else if(JUMP_DURATION>=500 && JUMP_DURATION<600) {
+			JUMP_HEIGHT=120;
+		}else if(JUMP_DURATION>=600 && JUMP_DURATION<700) {
+			JUMP_HEIGHT=160;
+		}
+
                 long currentTime = System.currentTimeMillis();
                 long elapsedTime = currentTime - jumpStartTime;
                 if (elapsedTime >= JUMP_DURATION) {
