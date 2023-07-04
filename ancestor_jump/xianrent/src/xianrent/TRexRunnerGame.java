@@ -39,8 +39,8 @@ public class TRexRunnerGame extends JFrame {
         private static final int WIDTH = 800;
         private static final int HEIGHT = 400;
         private static final int GROUND_Y = 350;
-        private static int JUMP_DURATION =SpaceBarTimer.getJumpTime(); // Jump duration in milliseconds
-        private static  int JUMP_HEIGHT; // Height to jump in pixels
+        private static int JUMP_DURATION =700// Jump duration in milliseconds
+        private static  int JUMP_HEIGHT=200 ; // Height to jump in pixels
         private static final int OBSTACLE_WIDTH = 30;
         private static final int MIN_OBSTACLE_HEIGHT = 20;
         private static final int MAX_OBSTACLE_HEIGHT = 80;
@@ -119,17 +119,7 @@ public class TRexRunnerGame extends JFrame {
 
         private void update() {
             if (isJumping) {
-		    if(JUMP_DURATION<300){
-			JUMP_HEIGHT=50;
-		}else if(JUMP_DURATION>=300 && JUMP_DURATION<400) {
-			JUMP_HEIGHT=70;
-		}else if(JUMP_DURATION>=400 && JUMP_DURATION<500) {
-			JUMP_HEIGHT=90;
-		}else if(JUMP_DURATION>=500 && JUMP_DURATION<600) {
-			JUMP_HEIGHT=120;
-		}else if(JUMP_DURATION>=600 && JUMP_DURATION<700) {
-			JUMP_HEIGHT=160;
-		}
+	
 
                 long currentTime = System.currentTimeMillis();
                 long elapsedTime = currentTime - jumpStartTime;
