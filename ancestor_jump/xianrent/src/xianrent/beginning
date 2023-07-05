@@ -1,0 +1,238 @@
+package demo;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+public class TRexRunnerGame extends JFrame {
+private GamePanel gamePanel;
+private static final int MIN_OBSTACLE_FREQUENCY = 5;
+private static final int MAX_OBSTACLE_FREQUENCY = 10;
+public TRexRunnerGame() {
+setTitle("T-Rex Runner");
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+setResizable(false);
+gamePanel = new GamePanel();
+add(gamePanel);
+pack();
+setLocationRelativeTo(null);
+setVisible(true);
+}
+public static void main(String[] args) {
+SwingUtilities.invokeLater(() -> new TRexRunnerGame());
+}
+private class GamePanel extends JPanel {
+private static final int WIDTH = 800;
+private static final int HEIGHT = 400;
+private static final int GROUND_Y = 350;
+private static final int JUMP_DURATION = 700; // Jump duration in milliseconds
+private static final int JUMP_HEIGHT = 250; // Height to jump in pixels
+private static final int OBSTACLE_WIDTH = 30;
+private static final int MIN_OBSTACLE_HEIGHT = 20;
+private static final int MAX_OBSTACLE_HEIGHT = 80;
+private static final int OBSTACLE_SPEED = 4;
+private int playerY;
+private boolean isJumping;
+private long jumpStartTime;
+private List<Obstacle> obstacles;
+private Timer timer;
+private int score;
+public GamePanel() {
+setPreferredSize(new Dimension(WIDTH, HEIGHT));
+setBackground(Color.WHITE);
+setFocusable(true);
+addKeyListener(new KeyAdapter() {
+@Override
+public void keyPressed(KeyEvent e) {
+if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+jump();
+}
+}
+});
+obstacles = new ArrayList<>();
+generateObstacle();
+timer = new Timer(10, new ActionListener() {
+@Override
+public void actionPerformed(ActionEvent e) {
+update();
+repaint();
+}
+});
+timer.start();
+}
+private void jump() {
+if (!isJumping) {
+isJumping = true;
+playerY = GROUND_Y;
+jumpStartTime = System.currentTimeMillis();
+}
+}
+private void generateObstacle() {
+Random random = new Random();
+int obstacleHeight = random.nextInt(MAX_OBSTACLE_HEIGHT - MIN_OBSTACLE_HEIGHT + 1) + MIN_OBSTACLE_HEIGHT;
+int obstacleX = WIDTH;
+int obstacleY = GROUND_Y - obstacleHeight;
+obstacles.add(new Obstacle(obstacleX, obstacleY, OBSTACLE_WIDTH, obstacleHeight));
+}
+private void update() {
+if (isJumping) {
+long currentTime = System.currentTimeMillis();
+long elapsedTime = currentTime - jumpStartTime;
+if (elapsedTime >= JUMP_DURATION) {
+isJumping = false;
+playerY = GROUND_Y;
+} else {
+double progress = (double) elapsedTime / JUMP_DURATION;
+if (progress <= 0.5) {
+playerY = GROUND_Y - (int) (progress * 2 * JUMP_HEIGHT);
+} else {
+playerY = GROUND_Y - (int) ((1 - progress) * 2 * JUMP_HEIGHT);
+}
+}
+} else {
+playerY = GROUND_Y;
+}
+for (Obstacle obstacle : obstacles) {
+obstacle.move(getObstacleSpeed());
+if (obstacle.getX() + obstacle.getWidth() < 0) {
+obstacles.remove(obstacle);
+break;
+}
+if (isCollision(obstacle)) {
+gameOver();
+break;
+}
+}
+if (obstacles.isEmpty() || obstacles.get(obstacles.size() - 1).getX() <= WIDTH - getObstacleGap()) {
+generateObstacle();
+score++;
+if (score == 15) {
+setBlueObstacleProperties();
+} else if (score == 30) {
+setGreenObstacleProperties();
+}
+}
+if (score == 46) {
+JOptionPane.showMessageDialog(this, "You Win!", "Win", JOptionPane.INFORMATION_MESSAGE);
+System.exit(0);
+}
+}
+private void setBlueObstacleProperties() {
+Obstacle.setObstacleColor(Color.BLUE);
+Obstacle.setObstacleGap(300);
+Obstacle.setObstacleSpeed(5);
+}
+private void setGreenObstacleProperties() {
+Obstacle.setObstacleColor(Color.GREEN);
+Obstacle.setObstacleGap(350);
+Obstacle.setObstacleSpeed(6);
+}
+private int getObstacleGap() {
+if (score >= 30) {
+return Obstacle.getObstacleGap();
+} else if (score >= 15) {
+return 300;
+} else {
+return 350;
+}
+}
+private int getObstacleSpeed() {
+if (score >= 30) {
+return Obstacle.getObstacleSpeed();
+} else if (score >= 15) {
+return 5;
+} else {
+return 4;
+}
+}
+private boolean isCollision(Obstacle obstacle) {
+int playerLeft = 100;
+int playerRight = 100 + 50;
+int playerTop = playerY - 50;
+int playerBottom = playerY;
+int obstacleLeft = obstacle.getX();
+int obstacleRight = obstacle.getX() + obstacle.getWidth();
+int obstacleTop = obstacle.getY();
+int obstacleBottom = obstacle.getY() + obstacle.getHeight();
+if (playerRight >= obstacleLeft && playerLeft <= obstacleRight) {
+if (playerBottom >= obstacleTop && playerTop <= obstacleBottom) {
+return true;
+}
+}
+return false;
+}
+private void gameOver() {
+timer.stop();
+JOptionPane.showMessageDialog(this, "Game Over! Score: " + score, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+System.exit(0);
+}
+@Override
+protected void paintComponent(Graphics g) {
+super.paintComponent(g);
+drawPlayer(g);
+for (Obstacle obstacle : obstacles) {
+obstacle.draw(g);
+}
+drawScore(g);
+}
+private void drawPlayer(Graphics g) {
+g.setColor(Color.BLACK);
+g.fillRect(100, playerY - 50, 50, 50);
+}
+private void drawScore(Graphics g) {
+g.setColor(Color.BLACK);
+g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 24));
+g.drawString("Score: " + score, 10, 30);
+}
+}
+private static class Obstacle {
+private int x;
+private int y;
+private int width;
+private int height;
+private static Color color = Color.RED;
+private static int gap = 350;
+private static int speed = 4;
+public Obstacle(int x, int y, int width, int height) {
+this.x = x;
+this.y = y;
+this.width = width;
+this.height = height;
+}
+public int getX() {
+return x;
+}
+public int getWidth() {
+return width;
+}
+public void move(int speed) {
+x -= speed;
+}
+public void draw(Graphics g) {
+g.setColor(color);
+g.fillRect(x, y, width, height);
+}
+public int getY() {
+return y;
+}
+public int getHeight() {
+return height;
+}
+public static void setObstacleColor(Color obstacleColor) {
+color = obstacleColor;
+}
+public static void setObstacleGap(int obstacleGap) {
+gap = obstacleGap;
+}
+public static void setObstacleSpeed(int obstacleSpeed) {
+speed = obstacleSpeed;
+}
+public static int getObstacleGap() {
+return gap;
+}
+public static int getObstacleSpeed() {
+return speed;
+}
+}
+}
