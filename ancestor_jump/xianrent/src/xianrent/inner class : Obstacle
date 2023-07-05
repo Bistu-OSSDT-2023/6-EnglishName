@@ -1,0 +1,75 @@
+public class TRexRunnerGame extends JFrame {
+//省略方法
+//...
+private class GamePanel extends JPanel {
+//省略
+//...
+private class Obstacle {
+            private int x;
+            private int y;
+            private int width;
+            private int height;
+            private static int obstacleGap = 250;
+            private static int obstacleSpeed = 4;
+            private static Color obstacleColor = Color.RED;
+            private Image obstacleImage;
+
+            public Obstacle(int x, int y, int width, int height, Image obstacleImage) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.obstacleImage = obstacleImage;
+            }
+
+            public int getX() {
+                return x;
+            }
+
+            public int getY() {
+                return y;
+            }
+
+            public int getWidth() {
+                return width;
+            }
+
+            public int getHeight() {
+                return height;
+            }
+
+            public void move(int speed) {
+                x -= speed;
+            }
+
+            public void setImage(Image image) {
+                this.obstacleImage = image;
+            }
+
+            public void draw(Graphics g) {
+                g.drawImage(obstacleImage, x, y, width, height, null);
+            }
+
+            public static void setObstacleGap(int gap) {
+                obstacleGap = gap;
+            }
+
+            public static void setObstacleSpeed(int speed) {
+                obstacleSpeed = speed;
+            }
+
+            public static void setObstacleColor(Color color) {
+                obstacleColor = color;
+            }
+
+            public static int getObstacleGap() {
+                return obstacleGap;
+            }
+
+            public static int getObstacleSpeed() {
+                return obstacleSpeed;
+            }
+        }
+    }
+}
+
