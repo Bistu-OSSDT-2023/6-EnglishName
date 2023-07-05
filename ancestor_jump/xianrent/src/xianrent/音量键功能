@@ -1,0 +1,25 @@
+volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+volumeSlider.setMajorTickSpacing(10);
+volumeSlider.setMinorTickSpacing(5);
+volumeSlider.setPaintTicks(true);
+volumeSlider.setPaintLabels(true);
+menuPanel.add(volumeSlider);
+
+private void addVolumeSliderListener() {
+    volumeSlider.addChangeListener(e -> {
+        int volume = volumeSlider.getValue();
+        updateVolume(volume);
+    });
+}
+
+private void updateVolume(int volume) {
+    // 根据需要实现音量更新的逻辑
+    // 您可以将音量值传递给其他组件或播放器进行音量调节
+    System.out.println("Volume changed: " + volume);
+}
+
+public GamePanel() {
+    // 其他初始化代码...
+
+    addVolumeSliderListener();
+}
