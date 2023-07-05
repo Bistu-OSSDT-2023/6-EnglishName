@@ -1,4 +1,4 @@
-public class TRexRunnerGame1 extends JFrame {
+public class TRexRunnerGame extends JFrame {
 //此处省略了本类中的方法。
 //....
 }
