@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GameInterface {
+	private static TRexRunnerGame game;
     public static void main(String[] args) {
         JFrame frame = new JFrame("游戏开始界面");
         frame.setSize(800, 400);
@@ -50,17 +51,8 @@ public class GameInterface {
         frame.setVisible(true);
     }
 
-    public static void startGame() {
-        // 进入游戏界面的逻辑
-        JFrame gameFrame = new JFrame("游戏界面");
-        gameFrame.setSize(800, 400);
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // 游戏
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize(); 
-        int x = (int) ((dimension.getWidth() - gameFrame.getWidth()) / 2); 
-        int y = (int) ((dimension.getHeight() - gameFrame.getHeight()) / 2); 
-        gameFrame.setLocation(x, y); 
-        gameFrame.setVisible(true); 
-        } 
-    }
+    
+		public static void startGame() {
+			game = new TRexRunnerGame();
+		}
+	}
