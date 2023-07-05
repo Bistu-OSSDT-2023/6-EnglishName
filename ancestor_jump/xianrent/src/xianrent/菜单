@@ -1,0 +1,15 @@
+// Create menu panel
+menuPanel = new JPanel();
+int menuPanelWidth = 400; // 菜单面板的宽度
+int menuPanelHeight = 300; // 菜单面板的高度
+
+menuPanel.setBounds((WIDTH - 400) / 2, (HEIGHT - 300) / 2, 400, 300);
+menuPanel.setBackground(Color.GRAY);
+menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+menuPanel.setVisible(false);
+JLabel pauseLabel = new JLabel("Game Paused");
+pauseLabel.setFont(new Font("Arial", Font.BOLD, 24));
+pauseLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+pauseLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+menuPanel.add(pauseLabel);
+add(menuPanel);
