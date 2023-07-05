@@ -1,0 +1,16 @@
+private Clip audioClip;
+
+private void loadMusic() {
+    try {
+        // 加载音频文件
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource("/resources/music.wav"));
+        
+        // 创建音频剪辑
+        audioClip = AudioSystem.getClip();
+        
+        // 打开音频剪辑并加载音频流
+        audioClip.open(audioInputStream);
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        e.printStackTrace();
+    }
+}
