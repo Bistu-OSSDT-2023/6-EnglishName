@@ -46,12 +46,6 @@ public class TRexRunnerGame extends JFrame {
         private static final int MAX_OBSTACLE_HEIGHT = 80;
         private static final int OBSTACLE_SPEED = 4;
 
-
-
-
-
-        
-
         private int playerY;
         private boolean isJumping;
         private long jumpStartTime;
@@ -74,10 +68,10 @@ public class TRexRunnerGame extends JFrame {
 
             try {
                 // Load player and obstacle images
-                playerImage = ImageIO.read(new File("C:/Users/caoan/Desktop/picture/player.png8"));
-                obstacleImage1 = ImageIO.read(new File("C:/Users/caoan/Desktop/picture/obstacle1.png8"));
-                obstacleImage2 = ImageIO.read(new File("C:/Users/caoan/Desktop/picture/obstacle2.png8"));
-                obstacleImage3 = ImageIO.read(new File("C:/Users/caoan/Desktop/picture/obstacle3.png8"));
+                playerImage = ImageIO.read(new File("src/xianrent/player.png8"));
+                obstacleImage1 = ImageIO.read(new File("src/xianrent/obstacle1.png8"));
+                obstacleImage2 = ImageIO.read(new File("src/xianrent/obstacle2.png8"));
+                obstacleImage3 = ImageIO.read(new File("src/xianrent/obstacle3.png8"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
