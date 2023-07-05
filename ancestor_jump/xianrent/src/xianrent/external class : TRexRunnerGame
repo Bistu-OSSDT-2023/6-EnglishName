@@ -1,0 +1,32 @@
+public class TRexRunnerGame extends JFrame {
+
+    private GamePanel gamePanel;
+
+    private static final int MIN_OBSTACLE_FREQUENCY = 5;
+    private static final int MAX_OBSTACLE_FREQUENCY = 10;
+
+    public TRexRunnerGame() {
+        setTitle("T-Rex Runner");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        gamePanel = new GamePanel();
+        add(gamePanel);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(TRexRunnerGame::new);
+    }
+ private class GamePanel extends JPanel {
+//此处省略GamePanel中的方法。
+//...
+}
+private class Obstacle {
+//此处省略Obstacle中的方法。
+//...
+}
+}
