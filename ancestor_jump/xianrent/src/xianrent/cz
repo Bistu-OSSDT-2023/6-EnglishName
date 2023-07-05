@@ -1,0 +1,39 @@
+addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                        jump();
+                    } else if (e.getKeyCode() == KeyEvent.VK_P) {
+                        togglePause();
+                    }
+                }
+            });
+
+       timer = new Timer(10, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (!isPaused) { // Only update the game if it's not paused
+                        update();
+                        repaint();
+                    }
+                }
+            });
+            timer.start();
+
+            isPaused = false;
+  private void togglePause() {
+            isPaused = !isPaused;
+            if (isPaused) {
+                timer.stop();
+                volumeSlider.setVisible(true);
+                menuPanel.setVisible(true);
+                setBackground(Color.LIGHT_GRAY);
+            } else {
+                timer.start();
+                volumeSlider.setVisible(false);
+                menuPanel.setVisible(false);
+                setBackground(Color.WHITE);
+            }
+            repaint();
+            
+        }
