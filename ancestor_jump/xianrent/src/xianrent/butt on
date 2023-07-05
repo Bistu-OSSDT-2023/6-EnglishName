@@ -1,0 +1,61 @@
+// Create menu panel
+menuPanel = new JPanel();
+int menuPanelWidth = 400; // 菜单面板的宽度
+int menuPanelHeight = 300; // 菜单面板的高度
+
+menuPanel.setBounds((WIDTH - 400) / 2, (HEIGHT - 300) / 2, 400, 300);
+menuPanel.setBackground(Color.GRAY);
+menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+menuPanel.setVisible(false);
+JLabel pauseLabel = new JLabel("Game Paused");
+pauseLabel.setFont(new Font("Arial", Font.BOLD, 24));
+pauseLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+pauseLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+JButton continueButton = new JButton("Continue");
+continueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+continueButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        togglePause();
+    }
+});
+JButton exitButton = new JButton("Exit");
+exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+exitButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        exitGame();
+    }
+});
+menuPanel.add(pauseLabel);
+menuPanel.add(continueButton);
+menuPanel.add(exitButton);
+add(menuPanel);
+
+// Create menu bar
+menuBar = new JMenuBar();
+setJMenuBar(menuBar);
+
+// Create game menu
+gameMenu = new JMenu("Game");
+menuBar.add(gameMenu);
+
+// Create continue menu item
+continueMenuItem = new JMenuItem("Continue");
+continueMenuItem.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        togglePause();
+    }
+});
+gameMenu.add(continueMenuItem);
+
+// Create exit menu item
+exitMenuItem = new JMenuItem("Exit");
+exitMenuItem.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        exitGame();
+    }
+});
+gameMenu.add(exitMenuItem);
