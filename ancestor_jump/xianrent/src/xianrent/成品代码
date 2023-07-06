@@ -1,0 +1,347 @@
+package demo;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class GameInterface {
+	private static TRexRunnerGame game;
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("游戏开始界面");
+        frame.setSize(800, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // 创建开始游戏按钮
+        JButton startButton = new JButton("开始游戏");
+        startButton.setBounds(125, 200, 200, 60);
+        startButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // 点击开始游戏按钮时触发的动作
+                frame.setVisible(false); // 隐藏开始界面
+                startGame(); // 进入游戏界面
+            }
+        });
+        frame.add(startButton);
+
+        // 创建退出游戏按钮
+        JButton exitButton = new JButton("退出游戏");
+        exitButton.setBounds(475, 200, 200, 60);
+        exitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // 点击退出游戏按钮时触发的动作
+                int choice = JOptionPane.showConfirmDialog(null, "确定要退出游戏吗？", "确认", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    System.exit(0); // 结束游戏进程
+                }
+            }
+        });
+        frame.add(exitButton);
+
+        // 设置窗口居中显示
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+        frame.setLocation(x, y); 
+
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+
+    
+		public static void startGame() {
+			game = new TRexRunnerGame();
+		}
+	}
+
+public class TRexRunnerGame extends JFrame{
+	private GamePanel gamePanel;
+	private static final int MIN_OBSTACLE_FREQUENCY = 5;
+	private static final int MAX_OBSTACLE_FREQUENCY = 10;
+	public TRexRunnerGame() {
+		setTitle("T-Rex Runner");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
+		gamePanel = new GamePanel();
+		add(gamePanel);
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(TRexRunnerGame::new);
+	}
+	private class GamePanel extends JPanel {
+		private static final int WIDTH = 800;
+		private static final int HEIGHT = 400;
+		private static final int GROUND_Y = 350;
+		private static final int JUMP_DURATION = 700; // Jump duration in milliseconds
+		private static final int JUMP_HEIGHT = 250; // Height to jump in pixels
+		private static final int OBSTACLE_WIDTH = 30;
+		private static final int MIN_OBSTACLE_HEIGHT = 20;
+		private static final int MAX_OBSTACLE_HEIGHT = 80;
+		private static final int OBSTACLE_SPEED = 4;
+		private int playerY;
+		private boolean isJumping;
+		private long jumpStartTime;
+		private List<Obstacle> obstacles;
+		private Timer timer;
+		private int score;
+		private Image playerImage;
+		private Image obstacleImage1;
+		private Image obstacleImage2;
+		private Image obstacleImage3;
+		private boolean isBlueObstacleSet;
+		private boolean isGreenObstacleSet;
+	public GamePanel() {
+		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		setBackground(Color.PINK);
+		setFocusable(true);
+		try {
+			// Load player and obstacle images
+			playerImage = ImageIO.read(new File("C:\\Users\\86185\\Documents\\WeChat Files\\wxid_smxg57t1qc6j22\\FileStorage\\File\\2023-07\\player.png8"));
+			obstacleImage1 = ImageIO.read(new File("C:\\Users\\86185\\Documents\\WeChat Files\\wxid_smxg57t1qc6j22\\FileStorage\\File\\2023-07\\obstacle1.png8"));
+			obstacleImage2 = ImageIO.read(new File("C:\\Users\\86185\\Documents\\WeChat Files\\wxid_smxg57t1qc6j22\\FileStorage\\File\\2023-07\\obstacle2.png8"));
+			obstacleImage3 = ImageIO.read(new File("C:\\Users\\86185\\Documents\\WeChat Files\\wxid_smxg57t1qc6j22\\FileStorage\\File\\2023-07\\obstacle3.png8"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		addKeyListener(new KeyAdapter() {
+			@Override
+	public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+					jump();
+				}
+			}
+		});
+		obstacles = new ArrayList<>();
+		generateObstacle();
+		timer = new Timer(10, e -> {
+			update();
+			repaint();
+		});
+		timer.start();
+	}
+	private void jump() {
+		if (!isJumping) {
+			isJumping = true;
+			playerY = GROUND_Y;
+			jumpStartTime = System.currentTimeMillis();
+		}
+	}
+	private void generateObstacle() {
+		Random random = new Random();
+		int obstacleHeight = random.nextInt(MAX_OBSTACLE_HEIGHT - MIN_OBSTACLE_HEIGHT + 1) + MIN_OBSTACLE_HEIGHT;
+		int obstacleX = WIDTH;
+		int obstacleY = GROUND_Y - obstacleHeight;
+		obstacles.add(new Obstacle(obstacleX, obstacleY, OBSTACLE_WIDTH, obstacleHeight, obstacleImage1));
+	}
+	private void update() {
+		if (isJumping) {
+			long currentTime = System.currentTimeMillis();
+			long elapsedTime = currentTime - jumpStartTime;
+			if (elapsedTime >= JUMP_DURATION) {
+				isJumping = false;
+				playerY = GROUND_Y;
+			} else {
+				double progress = (double) elapsedTime / JUMP_DURATION;
+				if (progress <= 0.5) {
+					playerY = GROUND_Y - (int) (progress * 2 * JUMP_HEIGHT);
+				} else {
+					playerY = GROUND_Y - (int) ((1 - progress) * 2 * JUMP_HEIGHT);
+				}
+			}
+		} else {
+			playerY = GROUND_Y;
+		}
+		for (int i = obstacles.size() - 1; i >= 0; i--) {
+			Obstacle obstacle = obstacles.get(i);
+			obstacle.move(getObstacleSpeed());
+			if (obstacle.getX() + obstacle.getWidth() < 0) {
+				obstacles.remove(obstacle);
+				break;
+			}
+			if (isCollision(obstacle)) {
+				gameOver();
+				break;
+			}
+		}
+		if (obstacles.isEmpty() || obstacles.get(obstacles.size() - 1).getX() <= WIDTH - getObstacleGap()) {
+			generateObstacle();
+			score++;
+			if (score >= 16 && score <= 30 ) {
+				setBlueObstacleProperties();
+				isBlueObstacleSet = true;
+			} else if (score >= 31 && score <= 45 ) {
+				setGreenObstacleProperties();
+				isGreenObstacleSet = true;
+			}
+		}
+		if (score == 46) {
+			JFrame frame = new JFrame();
+			frame.setTitle("Game Over");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
+	}
+	private void setBlueObstacleProperties() {
+		obstacles.forEach(obstacle -> obstacle.setImage(obstacleImage2));
+	}
+	private void setGreenObstacleProperties() {
+		obstacles.forEach(obstacle -> obstacle.setImage(obstacleImage3));
+	}
+	private int getObstacleGap() {
+		if (score >= 30) {
+			return Obstacle.getObstacleGap();
+		} else if (score >= 15) {
+			return 300;
+		} else {
+			return 350;
+		}
+	}
+	private int getObstacleSpeed() {
+		if (score >= 30) {
+			return Obstacle.getObstacleSpeed();
+		} else if (score >= 15) {
+			return 5;
+		} else {
+			return 4;
+		}
+	}
+	private boolean isCollision(Obstacle obstacle) {
+		int playerLeft = 100;
+		int playerRight = 100 + 50;
+		int playerTop = playerY - 50;
+		int playerBottom = playerY;
+		int obstacleLeft = obstacle.getX();
+		int obstacleRight = obstacle.getX() + obstacle.getWidth();
+		int obstacleTop = obstacle.getY();
+		int obstacleBottom = obstacle.getY() + obstacle.getHeight();
+		if (playerRight >= obstacleLeft && playerLeft <= obstacleRight) {
+			if (playerBottom >= obstacleTop && playerTop <= obstacleBottom) {
+				return true;
+			}
+		}
+		return false;
+	}
+	private void gameOver() {
+		timer.stop();
+		JOptionPane.showMessageDialog(this, "Game Over! Score: " + score, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+		// 创建结束界面
+		JPanel gameOverPanel = new JPanel(new GridLayout(2, 1));
+		// 创建重新开始按钮
+		JButton restartButton = new JButton("重新开始");
+		restartButton.addActionListener(new ActionListener() {
+			@Override
+	public void actionPerformed(ActionEvent e) {
+		// 重新开始游戏，重新初始化游戏面板
+		obstacles.clear();
+		generateObstacle();
+		score = 0;
+		isBlueObstacleSet = false;
+		isGreenObstacleSet = false;
+		timer.start();
+		// 关闭结束界面对话框
+		Container container = restartButton.getTopLevelAncestor();
+			if (container instanceof Window) {
+				Window window = (Window) container;
+				window.dispose();
+			}
+		}
+	});
+		gameOverPanel.add(restartButton);
+		// 创建退出游戏按钮
+		JButton exitButton = new JButton("退出游戏");
+		exitButton.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0); // 结束游戏程序的进程
+		}
+	});
+		gameOverPanel.add(exitButton);
+		// 显示结束界面对话框
+		JOptionPane.showOptionDialog(this, gameOverPanel, "Game Over", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+	}
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		drawPlayer(g);
+		for (Obstacle obstacle : obstacles) {
+			obstacle.draw(g);
+		}
+		drawScore(g);
+	}
+	private void drawPlayer(Graphics g) {
+		g.drawImage(playerImage, 100, playerY - 50, 50, 50, null);
+	}
+	private void drawScore(Graphics g) {
+		g.setColor(Color.BLACK);
+		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
+		g.drawString("Score: " + score, 20, 30);
+	}
+	private class Obstacle {
+		private int x;
+		private int y;
+		private int width;
+		private int height;
+		private static int obstacleGap = 250;
+		private static int obstacleSpeed = 4;
+		private static Color obstacleColor = Color.RED;
+		private Image obstacleImage;
+		public Obstacle(int x, int y, int width, int height, Image obstacleImage) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+			this.obstacleImage = obstacleImage;
+			}
+			public int getX() {
+				return x;
+			}
+			public int getY() {
+				return y;
+			}
+			public int getWidth() {
+				return width;
+			}
+			public int getHeight() {
+				return height;
+			}
+			public void move(int speed) {
+				x -= speed;
+			}
+			public void setImage(Image image) {
+				this.obstacleImage = image;
+			}
+			public void draw(Graphics g) {
+				g.drawImage(obstacleImage, x, y, width, height, null);
+			}
+			public static void setObstacleGap(int gap) {
+				obstacleGap = gap;
+			}
+			public static void setObstacleSpeed(int speed) {
+				obstacleSpeed = speed;
+			}
+			public static void setObstacleColor(Color color) {
+				obstacleColor = color;
+			}
+			public static int getObstacleGap() {
+				return obstacleGap;
+			}
+			public static int getObstacleSpeed() {
+				return obstacleSpeed;
+			}
+		}
+	}
+}
